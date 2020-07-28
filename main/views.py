@@ -99,9 +99,24 @@ def update_author(id):
         )
     )
 
+#################################################
+##########Delete an author#######################
+#################################################
+@app.route('/author/<id>',methods=['DELETE'])
+def delete_author(id):
+    author_to_delete=Author.query.get_or_404(id)
 
-
-
+    db.session.delete(author_to_delete)
+    db.session.commit()
+    
+    author=AuthorOuputSchema().dump(author_to_delete)
+    return make_response(
+        jsonify(
+            {"message":"Author deleted successfully",
+              "author":author
+            }
+        )
+    )
 
 
 
@@ -113,7 +128,7 @@ def update_author(id):
 
 @app.errorhandler(404)
 def not_found(error):
-    return jsonify({"message":"Not Found"})
+    return jsonify({"message":"Nothing Found"})
 
 @app.errorhandler(500)
 def internal_error(error):
