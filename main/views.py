@@ -26,6 +26,59 @@ def get_all_authors():
         }
     ))
 
+##############################
+#####Creating An Author#######
+##############################
+@app.route('/authors',methods=['POST'])
+def create_an_author():
+    #get the JSON response
+    data=request.get_json()
+    author_schema=AuthorOuputSchema()
+
+    #transform JSON data to SQLAlchemy instance
+    author=author_schema.load(data)
+
+    #create the instance in the database
+    result=author_schema.dump(author.create())
+
+    return make_response(
+        jsonify(
+            {
+                "message":"Author Created",
+                "author":result
+            }
+        ),201
+    )
+
+
+##############################################
+###########Get an author by ID################
+##############################################
+@app.route('/author/<id>')
+def get_author_by_id(id):
+    get_author=Author.query.get_or_404(id)
+
+    author_schema=AuthorOuputSchema()
+
+    author=author_schema.dump(get_author)
+
+    return make_response(jsonify(
+        {
+            "message":"author",
+            "author":author
+        }
+    ))
+
+
+
+
+
+
+
+
+
+
+
 
 @app.errorhandler(404)
 def not_found(error):

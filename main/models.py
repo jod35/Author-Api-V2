@@ -5,6 +5,7 @@ from main import db
 from marshmallow import fields
 from marshmallow_sqlalchemy import ModelSchema
 
+
 ######################
 ######Author##########
 ######################
@@ -19,16 +20,25 @@ class Author(db.Model):
         self.specialization=specialization
 
     def __str__(self):
-        return f'Auhor {self.name}'
-
+        return f'Author {self.name}'
+    
+    #find out the specialization
     def is_specialized_in(self):
         return self.specialization
+
+    #create a new author 
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
 
 
 ######################
 ##Output Schema#######
 ######################
-class AuthorOuputSchema(ModelSchema): #dictates how our SQLAlchemy instances will be returned as JSON
+class AuthorOuputSchema(ModelSchema):
+     #dictates how our SQLAlchemy instances will be returned as JSON
     class Meta(ModelSchema.Meta):
         model=Author
         sqla_session=db.session
