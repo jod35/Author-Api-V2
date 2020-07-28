@@ -54,7 +54,7 @@ def create_an_author():
 ##############################################
 ###########Get an author by ID################
 ##############################################
-@app.route('/author/<id>')
+@app.route('/author/<id>',methods=['GET'])
 def get_author_by_id(id):
     get_author=Author.query.get_or_404(id)
 
@@ -68,6 +68,37 @@ def get_author_by_id(id):
             "author":author
         }
     ))
+
+
+##############################################
+############Update an author##################
+##############################################
+@app.route('/author/<id>',methods=['PUT'])
+def update_author(id):
+    data=request.get_json()
+
+    author_schema=AuthorOuputSchema()
+    author_to_update=Author.query.get_or_404(id)
+
+    if data.get('name'):
+        author_to_update.name=data.get('name')
+    if data.get('specialization'):
+        author_to_update.specialization=data.get('specialization')
+
+    db.session.add(author_to_update)
+    db.session.commit()
+
+    author=author_schema.dump(author_to_update)
+
+    return make_response(
+        jsonify(
+            {
+                "message":"author info updated to:",
+                "author":author
+            }
+        )
+    )
+
 
 
 
