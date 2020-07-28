@@ -2,6 +2,8 @@
 #############DATABASE MODELS########################################
 ####################################################################
 from main import db
+from marshmallow import fields
+from marshmallow_sqlalchemy import ModelSchema
 
 ######################
 ######Author##########
@@ -21,3 +23,16 @@ class Author(db.Model):
 
     def is_specialized_in(self):
         return self.specialization
+
+
+######################
+##Output Schema#######
+######################
+class AuthorOuputSchema(ModelSchema): #dictates how our SQLAlchemy instances will be returned as JSON
+    class Meta(ModelSchema.Meta):
+        model=Author
+        sqla_session=db.session
+
+    id=fields.Number(dump_only=True)
+    name=fields.String(required=True)
+    specialization=fields.String(required=True)
